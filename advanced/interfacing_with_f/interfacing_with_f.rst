@@ -12,6 +12,11 @@ This chapter contains basic interfacing with Fortran functions and subroutines.
    :local:
    :depth: 1
 
+.. testsetup::
+
+   import os
+   os.system('f2py -c -m cos_module python_f_api/cos_module.F')
+
 Introduction
 ============
 
@@ -29,22 +34,21 @@ To illustrate the use of Fortran functions we consider the cosine
 function ``cos(x)``.  In this special case we call the interface function
 ``cos_fun`` so we do not hide the Fortran intrinsic.
 
-::
-
-    #cos_module.F
-    double precision function cos_fun(x)
-    double precision x
-    cos_fun = cos(x)
-    return
-    end
+.. literalinclude:: python_f_api/cos_module.F
+   :language: f
 
 We now use the `f2py` command (provided with numpy) to generate a dynamically
-linked library which Python can import ::
+linked library which Python can import
 
-    $ f2py -c -m cos_module cos_module.f
+.. sourcecode:: console 
+
+    $ cd advanced/interfacing_with_f/python_f/api
+    $ f2py -c -m cos_module cos_module.F
+
 
 This generates the file ``cos_module.so``. In Python we import and use it as
-with any other module ::
+with any other module::
+
 
     >>> from cos_module import cos_fun as cos
     ... print cos(math.pi/3)
