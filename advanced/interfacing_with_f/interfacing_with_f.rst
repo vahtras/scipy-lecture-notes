@@ -12,10 +12,6 @@ This chapter contains basic interfacing with Fortran functions and subroutines.
    :local:
    :depth: 1
 
-.. testsetup::
-
-   import os
-   os.system('f2py -c -m cos_module python_f_api/cos_module.F')
 
 Introduction
 ============
@@ -45,13 +41,18 @@ linked library which Python can import
     $ cd advanced/interfacing_with_f/python_f/api
     $ f2py -c -m cos_module cos_module.F
 
+.. testsetup::
+
+   >>> import subprocess
+   >>> status = subprocess.call('f2py -c -m cos_module advanced/interfacing_with_f/python_f_api/cos_module.F', shell=True)
 
 This generates the file ``cos_module.so``. In Python we import and use it as
 with any other module::
 
 
+    >>> from math import pi
     >>> from cos_module import cos_fun as cos
-    ... print cos(math.pi/3)
+    >>> print cos(pi/3)
     0.5
 
 
