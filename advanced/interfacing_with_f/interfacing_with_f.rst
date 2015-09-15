@@ -30,7 +30,7 @@ To illustrate the use of Fortran functions we consider the cosine
 function ``cos(x)``.  In this special case we call the interface function
 ``cos_fun`` so we do not hide the Fortran intrinsic.
 
-.. literalinclude:: python_f_api/cos_module.F
+.. literalinclude:: python_f_api/cos_fun.F
    :language: f
 
 We now use the `f2py` command (provided with numpy) to generate a dynamically
@@ -39,20 +39,20 @@ linked library which Python can import
 .. sourcecode:: console 
 
     $ cd advanced/interfacing_with_f/python_f/api
-    $ f2py -c -m cos_module cos_module.F
+    $ f2py -c -m cos_module cos_fun.F
 
 .. testsetup::
 
    >>> import subprocess
-   >>> status = subprocess.call('f2py -c -m cos_module advanced/interfacing_with_f/python_f_api/cos_module.F', shell=True)
+   >>> status = subprocess.call('f2py -c -m cos_module advanced/interfacing_with_f/python_f_api/*.F', shell=True)
 
 This generates the file ``cos_module.so``. In Python we import and use it as
 with any other module::
 
 
-    >>> from math import pi
-    >>> from cos_module import cos_fun as cos
-    >>> print cos(pi/3)
+    >>> import math
+    >>> import cos_module
+    >>> print cos_module.cos_fun(math.pi/3)
     0.5
 
 
@@ -62,14 +62,10 @@ In Fortran, input and output arguments to subroutines can be in any order,
 whereas the Python convention is that function arguments are input and return
 values are output.  We can supply the subroutine with information on input and
 output intent, as compiler directives for ``f2py``. The module functions that
-are generated translate the output variables to function return values ::
+are generated translate the output variables to function return values
  
-          subroutine cos_sub(cos_x, x)
-          double precision cos_x, x
-    Cf2py intent(out) cos_x
-          cos_x = cos(x)
-          return
-          end
+.. literalinclude:: python_f_api
+   :language: f
 
 The default for ``f2py`` is to assume default input intent, so there is only one
 directive for the output variable.  This subroutine may be  called from Python
@@ -90,22 +86,12 @@ We now extend the ``cos_sub`` routine to accept a numpy array as an argument.
 The length ``n`` of the array in the subroutine definition, is not required in a
 call from Python, as the size of the array is a property of the array
 
-::
-
-          subroutine vec_cos_sub(cos_x, x, n)
-          double precision cos_x, x
-          dimension cos_x(n), x(n)
-    Cf2py intent(in) x
-    Cf2py intent(out) cos_x
-          do i=1, n
-             cos_x(i) = cos(x(i))
-          end do
-          return
-          end
+.. literalinclude:: python_f_api/vec_cos_sub
 
 Declaring an array with output intent signals to ``f2py`` that it is to be
 allocated. This subroutine is used from Python as follows, ::
 
+    >>> import numpy
     >>> vec = numpy.array([0, math.pi/6, math.pi/3, math.pi/2])
     >>> from cos_module import vec_cos_sub as cos
     >>> cv = cos(vec)
@@ -122,18 +108,8 @@ a potential source of memory leaks that comes with new allocations for every
 function call.  We thus create the array in Python and declare it to have the
 in/out intent attribute for ``f2py``. 
 
-::
 
-          subroutine update_vec_cos_sub(cos_x, x, n)
-          double precision cos_x, x
-          dimension cos_x(n), x(n)
-    Cf2py intent(in) x
-    Cf2py intent(in, out) cos_x
-          do i=1, n
-             cos_x(i) = cos_x(i) + cos(x(i))
-          end do
-          return
-          end
+.. literalinclude:: python_f_api/vec_cos_sub
 
 Calling this vectorized version is done with the following code
 ::
