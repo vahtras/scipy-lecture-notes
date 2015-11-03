@@ -184,6 +184,19 @@ The file ``cos_module.so`` contains the compiled extension, which we can now loa
     In [6]: cos_module.cos_func(3.14159265359)
     Out[7]: -1.0
 
+Alt::
+
+    >>> import cos_module
+    >>> dir(cos_module)
+    ['__doc__', '__file__', '__name__', '__package__', 'cos_func']
+    >>> cos_module.cos_func(1.0)
+    0.5403023058681398
+    >>> cos_module.cos_func(0.0)
+    1.0
+    >>> cos_module.cos_func(3.14159265359)
+    -1.0
+    >>>
+
 Now let's see how robust this is:
 
 .. sourcecode:: ipython
