@@ -44,12 +44,12 @@ create_new_conda_env() {
     # Create a conda environment
     python build_tools/requirements_to_environment.py
     conda env create -f environment.yml
-    source activate testenv
+    . activate testenv
 }
 
 create_new_conda_env
 
-if [[ "$COVERAGE" == "true" ]]; then
+if [ "$COVERAGE" = "true" ]; then
     pip install coverage coveralls
 fi
 
