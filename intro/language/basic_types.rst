@@ -384,20 +384,22 @@ Dictionaries
 .. tip::
 
     A dictionary is basically an efficient table that **maps keys to
-    values**. It is an **unordered** container
+    values**. It has until recently been an **unordered** container, but
+    following a redesign of its implementation in Python 3.6, insersion
+    order is always preserved. For example:
 
 ::
 
     >>> tel = {'emmanuelle': 5752, 'sebastian': 5578}
     >>> tel['francis'] = 5915
     >>> tel     # doctest: +SKIP
-    {'sebastian': 5578, 'francis': 5915, 'emmanuelle': 5752}
+    {'emmanuelle': 5752, 'sebastian': 5578, 'francis': 5915}
     >>> tel['sebastian']
     5578
     >>> tel.keys()   # doctest: +SKIP
-    ['sebastian', 'francis', 'emmanuelle']
+    dict_keys(['emmanuelle', 'sebastian', 'francis'])
     >>> tel.values()   # doctest: +SKIP
-    [5578, 5915, 5752]
+    dict_values([5752, 5578, 5915])
     >>> 'francis' in tel
     True
 
