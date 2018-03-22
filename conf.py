@@ -35,7 +35,7 @@ extensions = [
         'only_directives',
         'ipython_console_highlighting',
         #'matplotlib.sphinxext.only_directives',
-        ('sphinx.ext.imgmath'  # only available for sphinx >= 1.4
+        ('sphinx.ext.mathjax'  # only available for sphinx >= 1.4
             if sphinx.version_info[:2] >= (1, 4)
             else 'sphinx.ext.pngmath'),
         'sphinx.ext.intersphinx',
